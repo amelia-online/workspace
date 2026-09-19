@@ -1,6 +1,9 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <ws/impl.h>
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 1
@@ -10,7 +13,7 @@
 void
 usage (char *path)
 {
-  printf ("usage: %s [project] [OPTIONS]\n", path);
+  printf ("usage: %s [OPTIONS] <project>\n", path);
   printf ("project: the folder in your DEFAULT_WS that you will `cd' into\n");
   printf ("OPTIONS:\n");
   printf ("    -h             Prints usage\n");
@@ -30,7 +33,6 @@ print_version (void)
           VERSION_TAG);
 }
 
-// stub
 int
 main (int argc, char **argv)
 {
@@ -57,24 +59,47 @@ main (int argc, char **argv)
       switch (opt)
         {
         case 'h':
-          usage (argv[0]);
+          usage (exe_path);
+          exit (EXIT_SUCCESS);
           break;
         case 'e':
+          editor = 1;
           break;
         case 'l':
+          list_projects ();
+          exit (EXIT_SUCCESS);
           break;
         case 'n':
+          create_new_project (optarg);
+          exit (EXIT_SUCCESS);
+          break;
+        case 'r':
+          return_directory ();
+          exit (EXIT_SUCCESS);
           break;
         case 'd':
           // ...
+          delete_project (optarg);
+          exit (EXIT_SUCCESS);
           break;
         case 'v':
           print_version ();
+          exit (EXIT_SUCCESS);
           break;
         default:
+          abort ();
           break;
         }
     }
+
+  if (optind >= argc)
+    {
+      usage (exe_path);
+      exit (EXIT_FAILURE);
+    }
+
+  project = argv[optind];
+  enter_project (project);
 
   return 0;
 }
