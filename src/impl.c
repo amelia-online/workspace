@@ -79,7 +79,7 @@ enter_project (const char *name, int editor)
 
   if (chdir (path) == -1)
     {
-      fprintf (stderr, "Error: %s: %s\n", full_path, strerror (errno));
+      fprintf (stderr, "Error: %s: %s\n", path, strerror (errno));
       free (path);
       exit (EXIT_FAILURE);
     }
@@ -93,6 +93,17 @@ enter_project (const char *name, int editor)
 void
 delete_project (const char *name)
 {
+  const char *path = full_path (name);
+  verify_path (path);
+
+  if (rmdir (path) == -1)
+    {
+      fprintf (stderr, "Error: %s: %s\n", path, strerror (errno));
+      free (path);
+      exit (EXIT_FAILURE);
+    }
+
+  free (path);
 }
 
 void

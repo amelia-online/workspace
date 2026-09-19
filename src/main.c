@@ -52,40 +52,39 @@ main (int argc, char **argv)
   int editor = 0;
   char *project = NULL;
 
-  static struct option long_options[] = { { "rm", optional_argument, 0, 'd' },
+  static struct option long_options[] = { { "rm", required_argument, 0, 'd' },
                                           { "ls", no_argument, 0, 'l' },
                                           { "ed", no_argument, 0, 'e' },
                                           { 0, 0, 0, 0 } };
 
   int opt;
   int optindex = 0;
-  while ((opt = getopt_long (argc, argv, "hvn:rled:", long_options, &optindex))
+  while ((opt = getopt_long (argc, argv, "hvn:rld:e", long_options, &optindex))
          != -1)
     {
       switch (opt)
         {
-        case 'h':
+        case 'h': // -h
           usage (exe_path);
           exit (EXIT_SUCCESS);
           break;
-        case 'e':
+        case 'e': // --ed
           editor = 1;
           break;
-        case 'l':
+        case 'l': // --ls
           list_projects ();
           exit (EXIT_SUCCESS);
           break;
-        case 'n':
+        case 'n': // -n
           create_new_project (optarg);
           printf ("Successfully created project %s\n", optarg);
           exit (EXIT_SUCCESS);
           break;
-        case 'd':
-          // ...
+        case 'd': // --rm
           delete_project (optarg);
           exit (EXIT_SUCCESS);
           break;
-        case 'v':
+        case 'v': // -v
           print_version ();
           exit (EXIT_SUCCESS);
           break;

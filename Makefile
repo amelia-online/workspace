@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=c17 -I./include
+CFLAGS=-std=c17 -I./include -g -fsanitize=address
 SRC=src/main.c src/impl.c
 INCLUDE=include/ws/impl.h
 OBJS=impl.o
