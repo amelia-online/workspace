@@ -9,6 +9,4 @@ void delete_project (const char *);
 
 void list_projects (void);
 
-void return_directory (void);
-
 #endif // WORKSPACE_IMPL_H_

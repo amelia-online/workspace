@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <ws/impl.h>
 
@@ -19,7 +20,6 @@ usage (char *path)
   printf ("    -h             Prints usage\n");
   printf ("    -v             Prints the version\n");
   printf ("    -n <name>      Creates a new project with <name>\n");
-  printf ("    -r             Return to the previous directory\n");
   printf ("    --ls           List all projects in your DEFAULT_WS\n");
   printf (
       "    --ed           Opens your WS_EDITOR on the specified project\n");
@@ -40,6 +40,12 @@ main (int argc, char **argv)
     {
       usage (argv[0]);
       return 0;
+    }
+
+  if (!getenv ("DEFAULT_WS"))
+    {
+      fprintf (stderr, "Error: you must set your DEFAULT_WS variable!\n");
+      exit (EXIT_FAILURE);
     }
 
   char *exe_path = argv[0];
@@ -71,10 +77,7 @@ main (int argc, char **argv)
           break;
         case 'n':
           create_new_project (optarg);
-          exit (EXIT_SUCCESS);
-          break;
-        case 'r':
-          return_directory ();
+          printf ("Successfully created project %s\n", optarg);
           exit (EXIT_SUCCESS);
           break;
         case 'd':
