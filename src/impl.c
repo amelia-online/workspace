@@ -1,5 +1,6 @@
 #include <ws/impl.h>
 
+#include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -109,4 +110,25 @@ delete_project (const char *name)
 void
 list_projects ()
 {
+  const char *ws_path = get_default_ws ();
+  verify_path (ws_path);
+
+  DIR *ws = opendir (ws_path);
+
+  if (!ws)
+    {
+      fprintf (stderr, "Error: unable to open DEFAULT_WS!\n");
+      free (ws_path);
+      exit (EXIT_FAILURE);
+    }
+
+  struct dirent *entry;
+  while ((entry = readdir (ws)) != NULL)
+    {
+      if (entry->d_type == DT_DIR && entry->d_name[0] != '.')
+        printf ("%s\n", entry->d_name);
+    }
+
+  closedir (ws);
+  free (ws_path);
 }
