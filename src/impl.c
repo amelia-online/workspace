@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 
 static const char *
-get_default_ws ()
+get_default_ws (void)
 {
   const char *const path = getenv ("DEFAULT_WS");
 
@@ -44,7 +44,7 @@ verify_path (const char *path)
 {
   if (access (path, F_OK) == -1)
     {
-      fprintf (stderr, "Error: your DEFAULT_WS is invalid.\n");
+      fprintf (stderr, "Error: %s: %s\n", path, strerror (errno));
       exit (EXIT_FAILURE);
     }
 }
@@ -86,6 +86,12 @@ enter_project (const char *name, int editor)
     }
 
   free (path);
+
+#if defined(__APPLE__) && defined(__MACH__)
+  const char *shell = "/bin/zsh";
+#elif defined(__linux__)
+  const char *shell = "/bin/bash";
+#endif
 
   char *args[] = { "/bin/zsh", NULL };
   execvp (args[0], args);
