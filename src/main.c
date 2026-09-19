@@ -102,7 +102,7 @@ main (int argc, char **argv)
     }
 
   project = argv[optind];
-  enter_project (project);
+  enter_project (project, editor);
 
   return 0;
 }

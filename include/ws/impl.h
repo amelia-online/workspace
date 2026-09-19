@@ -3,7 +3,7 @@
 
 void create_new_project (const char *);
 
-void enter_project (const char *);
+void enter_project (const char *, int);
 
 void delete_project (const char *);
 

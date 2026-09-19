@@ -22,40 +22,72 @@ get_default_ws ()
   return strdup (path);
 }
 
-void
-create_new_project (const char *name)
+static const char *
+full_path (const char *name)
 {
   const char *ws_path = get_default_ws ();
-  if (access (ws_path, F_OK) == -1)
-    {
-      fprintf (stderr, "Error: your DEFAULT_WS is invalid.\n");
-      free (ws_path);
-      exit (EXIT_FAILURE);
-    }
-
   size_t path_len = strlen (ws_path);
   int has_slash = ws_path[path_len - 1] == '/';
   size_t full_len = (has_slash) ? path_len + strlen (name) + 1
                                 : path_len + strlen (name) + 2;
 
-  char result_path[full_len];
+  char *result_path = (char *)malloc (sizeof (char) * full_len);
   const char *fmt = (has_slash) ? "%s%s" : "%s/%s";
   snprintf (result_path, full_len, fmt, ws_path, name);
+  free (ws_path);
+  return result_path;
+}
+
+static void
+verify_path (const char *path)
+{
+  if (access (path, F_OK) == -1)
+    {
+      fprintf (stderr, "Error: your DEFAULT_WS is invalid.\n");
+      exit (EXIT_FAILURE);
+    }
+}
+
+void
+create_new_project (const char *name)
+{
+  const char *ws_path = get_default_ws ();
+  verify_path (ws_path);
+  free (ws_path);
+
+  const char *result_path = full_path (name);
 
   mode_t mode = S_IRWXG | S_IRWXO | S_IRWXU;
   if (mkdir (result_path, mode) == -1)
     {
-      fprintf (stderr, "Error: %s\n", strerror (errno));
-      free (ws_path);
+      fprintf (stderr, "Error: %s: %s\n", name, strerror (errno));
+      free (result_path);
       exit (EXIT_FAILURE);
     }
 
-  free (ws_path);
+  free (result_path);
 }
 
 void
-enter_project (const char *name)
+enter_project (const char *name, int editor)
 {
+  const char *path = full_path (name);
+  verify_path (path);
+
+  if (editor)
+    fprintf (stderr, "Warn: --ed is currently unsupported.\n");
+
+  if (chdir (path) == -1)
+    {
+      fprintf (stderr, "Error: %s: %s\n", full_path, strerror (errno));
+      free (path);
+      exit (EXIT_FAILURE);
+    }
+
+  free (path);
+
+  char *args[] = { "/bin/zsh", NULL };
+  execvp (args[0], args);
 }
 
 void
