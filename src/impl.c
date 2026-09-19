@@ -93,7 +93,7 @@ enter_project (const char *name, int editor)
   const char *shell = "/bin/bash";
 #endif
 
-  char *args[] = { "/bin/zsh", NULL };
+  char *args[] = { shell, NULL };
   execvp (args[0], args);
 }
 
