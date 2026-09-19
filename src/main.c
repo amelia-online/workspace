@@ -1,0 +1,80 @@
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 1
+#define VERSION_PATCH 0
+#define VERSION_TAG "-dev"
+
+void
+usage (char *path)
+{
+  printf ("usage: %s [project] [OPTIONS]\n", path);
+  printf ("project: the folder in your DEFAULT_WS that you will `cd' into\n");
+  printf ("OPTIONS:\n");
+  printf ("    -h             Prints usage\n");
+  printf ("    -v             Prints the version\n");
+  printf ("    -n <name>      Creates a new project with <name>\n");
+  printf ("    -r             Return to the previous directory\n");
+  printf ("    --ls           List all projects in your DEFAULT_WS\n");
+  printf (
+      "    --ed           Opens your WS_EDITOR on the specified project\n");
+  printf ("    --rm <name>    Deletes a project from your DEFAULT_WS\n");
+}
+
+void
+print_version (void)
+{
+  printf ("ws v%d.%d.%d%s\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH,
+          VERSION_TAG);
+}
+
+// stub
+int
+main (int argc, char **argv)
+{
+  if (argc == 1)
+    {
+      usage (argv[0]);
+      return 0;
+    }
+
+  char *exe_path = argv[0];
+  int editor = 0;
+  char *project = NULL;
+
+  static struct option long_options[] = { { "rm", optional_argument, 0, 'd' },
+                                          { "ls", no_argument, 0, 'l' },
+                                          { "ed", no_argument, 0, 'e' },
+                                          { 0, 0, 0, 0 } };
+
+  int opt;
+  int optindex = 0;
+  while ((opt = getopt_long (argc, argv, "hvn:rled:", long_options, &optindex))
+         != -1)
+    {
+      switch (opt)
+        {
+        case 'h':
+          usage (argv[0]);
+          break;
+        case 'e':
+          break;
+        case 'l':
+          break;
+        case 'n':
+          break;
+        case 'd':
+          // ...
+          break;
+        case 'v':
+          print_version ();
+          break;
+        default:
+          break;
+        }
+    }
+
+  return 0;
+}
